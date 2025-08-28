@@ -4,14 +4,16 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 from .scoring import score_prompt
-from .models import EvaluationResponse, Suggestion, QuizItem, QuizSubmission, QuizResult
+from .models import EvaluationResponse, Suggestion, QuizItem, QuizSubmission, QuizResult, ExampleItem
 from .quiz import get_quiz_items
 from .config import load_config
 from .llm_eval import evaluate_with_ollama
+from .examples import load_examples
 
 
 app = FastAPI(title="Prompt Engineering Trainer", version="0.2.0")
 CONFIG = load_config()
+EXAMPLES_CACHE = load_examples()
 
 # Allow local dev frontends
 app.add_middleware(
@@ -76,3 +78,8 @@ def submit_quiz(submission: QuizSubmission):
     total = len(submission.answers)
     score = round(100 * correct / total, 1) if total else 0.0
     return QuizResult(score=score, total=total, correct=correct, details=details)
+
+
+@app.get("/api/examples", response_model=List[ExampleItem])
+def list_examples():
+    return EXAMPLES_CACHE

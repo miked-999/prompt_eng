@@ -1,0 +1,502 @@
+[
+  {
+    "id": "ex1",
+    "bad": "Write about databases.",
+    "ok": "Explain the differences between SQL and NoSQL databases in 5 bullets.",
+    "good": "For a small analytics web app, explain the key differences between SQL and NoSQL databases in 5 bullets, covering data model, query patterns, scaling, costs, and when to choose each.",
+    "bad_explanation": "Too vague: no topic boundaries, audience, or structure, so responses will be unfocused.",
+    "ok_explanation": "Adds structure and scope (5 bullets; SQL vs NoSQL), but no audience or decision criteria.",
+    "good_explanation": "Targets a scenario (small analytics app) and specifies comparison criteria, guiding a practical answer.",
+    "details": "Moving from BAD → OK adds structure and a concrete comparison. From OK → GOOD, adding audience/context (small analytics app) and explicit criteria (model, queries, scaling, costs, recommendation) focuses the answer and makes it directly useful for decision-making."
+  },
+  {
+    "id": "ex2",
+    "bad": "Summarize this.",
+    "ok": "Summarize the article in 200 words.",
+    "good": "Summarize the article for an executive audience in ~200 words focusing on problem, solution, impact, and risks; use 4 short paragraphs with bolded section headers.",
+    "bad_explanation": "No source or criteria; the assistant cannot tell what or how to summarize.",
+    "ok_explanation": "Length constraint improves usability, but still lacks target audience and focus.",
+    "good_explanation": "Audience, focus areas, and structure produce a skim-friendly brief suited to execs.",
+    "details": "The OK prompt constrains length but remains generic. The GOOD prompt clarifies who it’s for (execs), what to emphasize (problem/solution/impact/risks), and how to format (short paragraphs, headers), which improves relevance and readability."
+  },
+  {
+    "id": "ex3",
+    "bad": "Write a project plan.",
+    "ok": "Create a 30-day project plan with weekly milestones.",
+    "good": "Create a 30-day project plan for migrating our CRM to Salesforce, with weekly milestones, owners, risks, and a Markdown table of deliverables.",
+    "bad_explanation": "No scope or context leads to generic output.",
+    "ok_explanation": "Adds timeframe and structure, but no domain or outcomes.",
+    "good_explanation": "Specifies domain, outputs, and structure for actionable planning.",
+    "details": "BAD → OK adds timeframe and milestones; OK → GOOD adds domain (CRM → Salesforce), owners/risks, and a deliverables table, turning it into an actionable plan."
+  },
+  {
+    "id": "ex4",
+    "bad": "Write meeting notes.",
+    "ok": "Summarize the meeting in bullets.",
+    "good": "Summarize the product roadmap meeting in 6 bullets focused on decisions, owners, deadlines, and open questions; add a final 'Next Steps' section.",
+    "bad_explanation": "No focus or structure.",
+    "ok_explanation": "Bullets help, but missing what to capture.",
+    "good_explanation": "Focuses on decisions, owners, deadlines, and next steps—what teams need.",
+    "details": "BAD → OK adds bullets; OK → GOOD narrows to decisions, owners, deadlines and next steps, making notes immediately usable."
+  },
+  {
+    "id": "ex5",
+    "bad": "Make a presentation.",
+    "ok": "Create a 10-slide presentation on Q3 goals.",
+    "good": "Draft a 10-slide deck outline for Q3 goals to present to the leadership team; include slide titles, key bullets, data sources, and a closing ask.",
+    "bad_explanation": "No audience or structure.",
+    "ok_explanation": "Slide count helps scope but lacks content guidance.",
+    "good_explanation": "Audience and content types make the deck directly usable.",
+    "details": "BAD → OK scopes slide count; OK → GOOD adds audience, slide contents, data sources and a closing ask, so the deck is ready to build."
+  },
+  {
+    "id": "ex6",
+    "bad": "Write an email to a customer.",
+    "ok": "Write a polite email to a frustrated customer.",
+    "good": "Compose a polite, empathetic email to a customer about a 24-hour shipment delay; apologize once, explain cause briefly, offer a 10% discount code, and confirm the new delivery date.",
+    "bad_explanation": "No scenario; tone and content uncertain.",
+    "ok_explanation": "Tone set, but missing situation and specifics.",
+    "good_explanation": "Gives scenario, tone, and concrete actions to include.",
+    "details": "BAD → OK sets tone; OK → GOOD adds scenario and specific elements (apology, cause, offer, date) to resolve the issue clearly."
+  },
+  {
+    "id": "ex7",
+    "bad": "Write a bug report.",
+    "ok": "Write a bug report with steps to reproduce.",
+    "good": "Write a bug report for a login failure on mobile Safari 16: include steps to reproduce, expected vs actual behavior, environment details, and a minimal repro link.",
+    "bad_explanation": "No structure; missing critical info.",
+    "ok_explanation": "Steps help, but missing environment and expectations.",
+    "good_explanation": "Adds browser/version, expectations, and repro link for faster triage.",
+    "details": "BAD → OK adds steps; OK → GOOD adds environment, expectations and a repro link, enabling faster triage."
+  },
+  {
+    "id": "ex8",
+    "bad": "Compare tools.",
+    "ok": "Compare Jira and Asana.",
+    "good": "Compare Jira and Asana for a 15-person engineering team: table with rows for workflows, permissions, reporting, integrations, costs; end with a recommendation and rationale.",
+    "bad_explanation": "No criteria; too broad.",
+    "ok_explanation": "Defines options but no evaluation criteria.",
+    "good_explanation": "Adds team size, criteria, and a recommendation request.",
+    "details": "BAD → OK names options; OK → GOOD adds team context, comparison criteria and a recommendation, supporting a decision."
+  },
+  {
+    "id": "ex9",
+    "bad": "Write release notes.",
+    "ok": "Write release notes for version 2.1.",
+    "good": "Write user-facing release notes for v2.1 in Markdown with sections: New, Improved, Fixed; include one-line impact per item and a link to docs.",
+    "bad_explanation": "No audience or format.",
+    "ok_explanation": "Version provided but no structure.",
+    "good_explanation": "Audience and structure yield readable notes.",
+    "details": "BAD → OK names a version; OK → GOOD adds user audience, sections and impact lines, producing scannable notes."
+  },
+  {
+    "id": "ex10",
+    "bad": "Write onboarding docs.",
+    "ok": "Create onboarding checklist.",
+    "good": "Create a 2-week onboarding checklist for a junior backend engineer: accounts, repos, local setup, first ticket, shadow sessions, and a 30/60/90 goal outline.",
+    "bad_explanation": "Too broad; unclear role/timeframe.",
+    "ok_explanation": "Checklist is helpful but lacks role detail.",
+    "good_explanation": "Role-specific steps and goals accelerate onboarding.",
+    "details": "BAD → OK gives a checklist; OK → GOOD adds role, timeline and concrete steps, accelerating onboarding."
+  },
+  {
+    "id": "ex11",
+    "bad": "Write acceptance criteria.",
+    "ok": "Write acceptance criteria for a login feature.",
+    "good": "Write Gherkin-style acceptance criteria for email+password login with lockout after 5 failed attempts and 'Remember me' option; include edge cases.",
+    "bad_explanation": "No scope.",
+    "ok_explanation": "Feature named, but no specifics.",
+    "good_explanation": "Constraints and edge cases make criteria testable.",
+    "details": "BAD → OK identifies a feature; OK → GOOD adds constraints and edge cases in a testable format."
+  },
+  {
+    "id": "ex12",
+    "bad": "Write a risk assessment.",
+    "ok": "List project risks.",
+    "good": "Create a risk assessment for data warehouse migration: list top 5 risks with likelihood, impact, owner, mitigation, and next review date in a table.",
+    "bad_explanation": "Unbounded and vague.",
+    "ok_explanation": "List helps but lacks scoring and owners.",
+    "good_explanation": "Adds priority, ownership, and mitigation for actionability.",
+    "details": "BAD → OK lists risks; OK → GOOD adds likelihood/impact, owners and mitigations in a table to drive action."
+  },
+  {
+    "id": "ex13",
+    "bad": "Write code to parse logs.",
+    "ok": "In Python, parse logs to CSV.",
+    "good": "In Python 3.11, write a script that reads Apache log lines from stdin and outputs CSV with columns {ip, method, path, status}; include one example input and output.",
+    "bad_explanation": "No language or IO.",
+    "ok_explanation": "Language given, but missing IO and schema.",
+    "good_explanation": "Specifies IO, schema, version, and examples for quick use.",
+    "details": "BAD → OK picks a language; OK → GOOD defines IO, schema, version and examples so code can be written directly."
+  },
+  {
+    "id": "ex14",
+    "bad": "Write an API doc.",
+    "ok": "Document the /users API.",
+    "good": "Write an OpenAPI-style doc for POST /users: params, request/response schema, auth requirements, error codes, and examples.",
+    "bad_explanation": "Unclear scope and format.",
+    "ok_explanation": "Endpoint named, but not what to include.",
+    "good_explanation": "Specifies doc sections for consistent API docs.",
+    "details": "BAD → OK names an endpoint; OK → GOOD specifies doc sections and examples for consistent API docs."
+  },
+  {
+    "id": "ex15",
+    "bad": "Write a KPI report.",
+    "ok": "Write a KPI report for support team.",
+    "good": "Write a monthly KPI report for the support team with sections: Ticket volume, First response time, CSAT, Top issues; include a 'Highlights' and 'Actions' section.",
+    "bad_explanation": "Vague; no cadence or metrics.",
+    "ok_explanation": "Audience named but not metrics or sections.",
+    "good_explanation": "Defines metrics and actions to drive improvements.",
+    "details": "BAD → OK sets audience; OK → GOOD defines metrics and action sections so the report guides improvements."
+  },
+  {
+    "id": "ex16",
+    "bad": "Write an incident report.",
+    "ok": "Write an incident report with timeline.",
+    "good": "Write a postmortem outline for a P1 outage (api 500s, 45 min): sections for Impact, Root Cause, Detection, Mitigation, Action Items (owners, dates).",
+    "bad_explanation": "No severity or scope.",
+    "ok_explanation": "Timeline helps, but structure missing.",
+    "good_explanation": "Standard postmortem sections make it actionable.",
+    "details": "BAD → OK adds a timeline; OK → GOOD uses postmortem sections with owners and dates, enabling follow‑through."
+  },
+  {
+    "id": "ex17",
+    "bad": "Write a product spec.",
+    "ok": "Write a product spec for notifications.",
+    "good": "Write a 1-pager spec for in-app notifications MVP: problem, goals, non-goals, user stories, success metrics, and a phased rollout plan.",
+    "bad_explanation": "Vague feature request.",
+    "ok_explanation": "Names area but lacks constraints.",
+    "good_explanation": "Concise 1-pager scope with goals and success metrics.",
+    "details": "BAD → OK names a feature; OK → GOOD scopes an MVP with goals, non‑goals, stories and success metrics to align delivery."
+  },
+  {
+    "id": "ex18",
+    "bad": "Write a migration plan.",
+    "ok": "Plan to migrate the database.",
+    "good": "Draft a phased plan to migrate from MySQL 5.7 to 8.0 with zero downtime: prechecks, dual-write period, cutover steps, rollback, and validation checklist.",
+    "bad_explanation": "No source/target or constraints.",
+    "ok_explanation": "Names change but no plan details.",
+    "good_explanation": "Phases and validation reduce risk during migration.",
+    "details": "BAD → OK states a migration; OK → GOOD adds phases, safety checks and rollback, reducing cutover risk."
+  },
+  {
+    "id": "ex19",
+    "bad": "Write a changelog.",
+    "ok": "Write a changelog for v3.",
+    "good": "Write a developer-focused changelog for v3 with breaking changes, deprecations, and upgrade steps; include code snippets where relevant.",
+    "bad_explanation": "Unclear audience.",
+    "ok_explanation": "Version only; lacks sections.",
+    "good_explanation": "Audience + sections + steps make upgrades easier.",
+    "details": "BAD → OK sets a version; OK → GOOD targets developers with breaking changes and upgrade steps, easing adoption."
+  },
+  {
+    "id": "ex20",
+    "bad": "Write a training plan.",
+    "ok": "Create a training plan for sales.",
+    "good": "Create a 4-week training plan for new sales reps: weekly topics, practice role-plays, product demo checklist, and a quiz each Friday.",
+    "bad_explanation": "No audience/timeframe.",
+    "ok_explanation": "Audience named; lacks structure.",
+    "good_explanation": "Weekly cadence, practice, and assessment create a usable plan.",
+    "details": "BAD → OK sets audience; OK → GOOD adds weekly cadence, practice and assessment to make training practical."
+  },
+  {
+    "id": "ex21",
+    "bad": "Write a job description.",
+    "ok": "Write a job description for a data analyst.",
+    "good": "Draft a job description for a Senior Data Analyst (hybrid, London): responsibilities, must-have skills, nice-to-haves, KPIs for 6 months, and application process.",
+    "bad_explanation": "Unbounded ask.",
+    "ok_explanation": "Role named but missing level/location.",
+    "good_explanation": "Level/location and success metrics make it concrete.",
+    "details": "BAD → OK names a role; OK → GOOD adds level/location, responsibilities and 6‑month KPIs to set expectations."
+  },
+  {
+    "id": "ex22",
+    "bad": "Write interview questions.",
+    "ok": "Write interview questions for product managers.",
+    "good": "Write 8 structured interview questions for a Senior PM focused on discovery skills, prioritization, stakeholder management, and metrics; include 2 follow-ups each.",
+    "bad_explanation": "No role or focus areas.",
+    "ok_explanation": "Role given but not competencies.",
+    "good_explanation": "Focus areas + follow-ups enable consistent evaluation.",
+    "details": "BAD → OK picks a role; OK → GOOD adds competency areas and structured follow‑ups for fair evaluations."
+  },
+  {
+    "id": "ex23",
+    "bad": "Make a dashboard.",
+    "ok": "Specify an analytics dashboard for marketing.",
+    "good": "Define a marketing dashboard: KPIs (leads, CAC, LTV, conversion), breakdowns by channel, weekly trend lines, and a 'Top insights' text box.",
+    "bad_explanation": "No metrics or audience.",
+    "ok_explanation": "Audience named but not KPIs or charts.",
+    "good_explanation": "KPIs and visual requirements guide implementation.",
+    "details": "BAD → OK names a dashboard; OK → GOOD lists KPIs, breakdowns and visuals to guide implementation."
+  },
+  {
+    "id": "ex24",
+    "bad": "Write an escalation email.",
+    "ok": "Write an escalation email to a vendor.",
+    "good": "Draft a concise escalation email to VendorX about missed SLA (P1 tickets, 3 days overdue): include incident IDs, impact summary, requested action, and deadline (Friday EOD).",
+    "bad_explanation": "No context or request.",
+    "ok_explanation": "Recipient known but missing specifics.",
+    "good_explanation": "Impact, IDs, and deadline make escalation actionable.",
+    "details": "BAD → OK sets recipient; OK → GOOD adds impact, IDs, request and deadline to drive action."
+  },
+  {
+    "id": "ex25",
+    "bad": "Write a runbook.",
+    "ok": "Write a runbook for restarts.",
+    "good": "Write a runbook for restarting the payments service safely: prechecks, commands, health checks, rollback, and on-call contact.",
+    "bad_explanation": "Generic; risk of mistakes.",
+    "ok_explanation": "Task named, steps missing.",
+    "good_explanation": "Prechecks and rollback prevent outages during maintenance.",
+    "details": "BAD → OK names a task; OK → GOOD adds prechecks, commands, health checks and rollback for safe execution."
+  },
+  {
+    "id": "ex26",
+    "bad": "Write acceptance tests.",
+    "ok": "Write acceptance tests for checkout.",
+    "good": "Write 5 acceptance tests for checkout: happy path, invalid card, insufficient funds, network retry, and fraud flag; use Given/When/Then format.",
+    "bad_explanation": "No scope.",
+    "ok_explanation": "Feature named but no scenarios.",
+    "good_explanation": "Explicit scenarios and format support automation.",
+    "details": "BAD → OK identifies the feature; OK → GOOD lists scenarios and a common format, making tests automatable and complete."
+  },
+  {
+    "id": "ex27",
+    "bad": "Write a security policy.",
+    "ok": "Write a password policy.",
+    "good": "Create a password policy for employees: length/complexity, rotation, MFA requirement, storage guidelines, and recovery steps.",
+    "bad_explanation": "Unclear domain.",
+    "ok_explanation": "Narrowed domain, missing specifics.",
+    "good_explanation": "Concrete requirements improve compliance and clarity.",
+    "details": "BAD → OK narrows to passwords; OK → GOOD adds length, rotation, MFA, storage and recovery requirements to improve compliance."
+  },
+  {
+    "id": "ex28",
+    "bad": "Write data retention rules.",
+    "ok": "Write data retention policy for logs.",
+    "good": "Draft a data retention policy for application logs: keep error logs 180 days, access logs 30 days, anonymize PII after 7 days; include justification and implementation notes.",
+    "bad_explanation": "No durations.",
+    "ok_explanation": "Scope known, durations missing.",
+    "good_explanation": "Specific durations + PII handling meet compliance.",
+    "details": "BAD → OK sets scope; OK → GOOD sets durations, PII handling and justification so teams can implement and audit."
+  },
+  {
+    "id": "ex29",
+    "bad": "Write a privacy notice.",
+    "ok": "Write a privacy notice for our app.",
+    "good": "Write a concise privacy notice for our mobile app explaining data collected, purpose, sharing, retention, and user rights; use friendly language.",
+    "bad_explanation": "Vague legal ask.",
+    "ok_explanation": "Audience set; sections missing.",
+    "good_explanation": "Standard sections improve transparency.",
+    "details": "BAD → OK sets product; OK → GOOD adds standard sections and plain language to meet transparency needs."
+  },
+  {
+    "id": "ex30",
+    "bad": "Explain OKRs.",
+    "ok": "Explain OKRs to the team.",
+    "good": "Explain OKRs to a new support team in 5 bullets with examples: one Objective and 3 measurable Key Results.",
+    "bad_explanation": "No audience or format.",
+    "ok_explanation": "Audience added; examples missing.",
+    "good_explanation": "Examples make abstract concepts concrete.",
+    "details": "BAD → OK sets audience; OK → GOOD adds examples and bullet structure to make OKRs tangible."
+  },
+  {
+    "id": "ex31",
+    "bad": "Write a performance review.",
+    "ok": "Write a performance review for an engineer.",
+    "good": "Draft a performance review for a mid-level backend engineer using SBI format: 2 strengths and 2 growth areas with specific examples and impact.",
+    "bad_explanation": "No framework.",
+    "ok_explanation": "Role named, criteria missing.",
+    "good_explanation": "SBI produces actionable, fair feedback.",
+    "details": "BAD → OK names the role; OK → GOOD uses the SBI framework with examples and impact for actionable feedback."
+  },
+  {
+    "id": "ex32",
+    "bad": "Write a handover note.",
+    "ok": "Write a handover note for my project.",
+    "good": "Write a handover note for the billing service: status, open issues, contacts, runbooks, and next milestones; use bullets and links.",
+    "bad_explanation": "Scope unknown.",
+    "ok_explanation": "Project named; content unspecified.",
+    "good_explanation": "Standard sections ease transitions.",
+    "details": "BAD → OK names the project; OK → GOOD adds status, issues, contacts, runbooks and milestones to ensure continuity."
+  },
+  {
+    "id": "ex33",
+    "bad": "Write a procurement request.",
+    "ok": "Write a procurement request for laptops.",
+    "good": "Draft a procurement request for 10 MacBook Pros for new engineers: specs, vendor quote links, total cost, justification, and needed-by date.",
+    "bad_explanation": "No quantity/specs.",
+    "ok_explanation": "Item known; details missing.",
+    "good_explanation": "Specs, quotes, and rationale speed approvals.",
+    "details": "BAD → OK names the item; OK → GOOD specifies quantity, specs, quotes, cost, justification and needed‑by date to speed approval."
+  },
+  {
+    "id": "ex34",
+    "bad": "Write a stakeholder update.",
+    "ok": "Update stakeholders on the project.",
+    "good": "Write a bi-weekly stakeholder update for the CRM project: status by workstream, timeline changes, risks/mitigations, and next decisions needed.",
+    "bad_explanation": "No cadence or content.",
+    "ok_explanation": "Audience known; structure missing.",
+    "good_explanation": "Workstreams and decisions make updates useful.",
+    "details": "BAD → OK sets audience; OK → GOOD organizes by workstream, risks and decisions to inform stakeholders."
+  },
+  {
+    "id": "ex35",
+    "bad": "Write customer interview questions.",
+    "ok": "Write some customer interview questions.",
+    "good": "Write 8 customer discovery questions for SMB users of our invoicing app, focusing on top jobs, pains, and current workarounds; include 2 follow-ups each.",
+    "bad_explanation": "No segment or focus.",
+    "ok_explanation": "Interview unspecified.",
+    "good_explanation": "Segment + JTBD focus improves insights.",
+    "details": "BAD → OK asks generally; OK → GOOD targets SMB users and JTBD with follow‑ups for deeper insights."
+  },
+  {
+    "id": "ex36",
+    "bad": "Write a QA plan.",
+    "ok": "Write a QA plan for the release.",
+    "good": "Draft a QA plan for the 2.5 release: scope, test matrix (browsers/devices), regression areas, owners, and go/no-go criteria.",
+    "bad_explanation": "Not scoped.",
+    "ok_explanation": "Release named; elements missing.",
+    "good_explanation": "Test matrix and criteria improve coverage.",
+    "details": "BAD → OK names the release; OK → GOOD adds scope, test matrix, regression areas, owners and go/no‑go criteria for coverage."
+  },
+  {
+    "id": "ex37",
+    "bad": "Write migration steps.",
+    "ok": "Write steps to move to Kubernetes.",
+    "good": "Outline steps to migrate the payments API to Kubernetes: containerization, config/secret management, readiness/liveness probes, HPA, and rollback plan.",
+    "bad_explanation": "No target.",
+    "ok_explanation": "Target set; steps generic.",
+    "good_explanation": "Critical K8s features ensure reliability.",
+    "details": "BAD → OK names the target; OK → GOOD includes containerization, probes, HPA and rollback to ensure reliability."
+  },
+  {
+    "id": "ex38",
+    "bad": "Write onboarding emails.",
+    "ok": "Write onboarding emails for new users.",
+    "good": "Write a 3-email onboarding sequence for new trial users: day 1 setup tips, day 3 key feature, day 7 success story + CTA; keep each under 120 words.",
+    "bad_explanation": "No sequence.",
+    "ok_explanation": "Audience set; cadence missing.",
+    "good_explanation": "Cadence + CTA improve conversion.",
+    "details": "BAD → OK sets audience; OK → GOOD defines sequence, timing, focus and length to improve conversion."
+  },
+  {
+    "id": "ex39",
+    "bad": "Write API guidelines.",
+    "ok": "Write API style guidelines.",
+    "good": "Write REST API style guidelines: naming conventions, versioning, error responses, pagination, and security headers; include examples.",
+    "bad_explanation": "Vague.",
+    "ok_explanation": "Scope known, no sections.",
+    "good_explanation": "Sections + examples aid adoption.",
+    "details": "BAD → OK sets topic; OK → GOOD enumerates sections and examples to drive adoption."
+  },
+  {
+    "id": "ex40",
+    "bad": "Write a compliance checklist.",
+    "ok": "Write a SOC 2 checklist.",
+    "good": "Draft a SOC 2 readiness checklist: policies, access controls, logging/monitoring, incident response, vendor risk, and evidence collection schedule.",
+    "bad_explanation": "Unclear framework.",
+    "ok_explanation": "Framework named; items missing.",
+    "good_explanation": "Key categories and evidence make it actionable.",
+    "details": "BAD → OK names the framework; OK → GOOD lists key categories and evidence schedule to prepare for audit."
+  },
+  {
+    "id": "ex41",
+    "bad": "Write a training doc for BI.",
+    "ok": "Write a BI training doc for analysts.",
+    "good": "Create a BI training guide for new analysts: data sources, semantic layer, common KPIs, governance rules, and 3 hands-on exercises.",
+    "bad_explanation": "Audience unclear.",
+    "ok_explanation": "Audience set; contents vague.",
+    "good_explanation": "Specific sections + exercises drive learning.",
+    "details": "BAD → OK sets audience; OK → GOOD adds sources, KPIs, governance and exercises to drive learning."
+  },
+  {
+    "id": "ex42",
+    "bad": "Write a feature brief.",
+    "ok": "Write a brief for dark mode.",
+    "good": "Write a feature brief for dark mode MVP: rationale, non-goals, affected components, accessibility considerations, rollout plan, and metrics for success.",
+    "bad_explanation": "Unscoped.",
+    "ok_explanation": "Feature named; depth missing.",
+    "good_explanation": "Rationale + a11y + metrics align delivery.",
+    "details": "BAD → OK names the feature; OK → GOOD adds rationale, a11y, rollout and success metrics to align teams."
+  },
+  {
+    "id": "ex43",
+    "bad": "Write a vendor comparison.",
+    "ok": "Compare three CRM vendors.",
+    "good": "Compare three CRM vendors for a 50-seat team: table rows for features, integrations, migration path, support SLAs, costs; end with recommendation.",
+    "bad_explanation": "Unbounded compare.",
+    "ok_explanation": "Domain known; criteria missing.",
+    "good_explanation": "Criteria + recommendation support decisions.",
+    "details": "BAD → OK names vendors; OK → GOOD adds team size, criteria, migration path and a recommendation to support a decision."
+  },
+  {
+    "id": "ex44",
+    "bad": "Write a weekly report.",
+    "ok": "Write a weekly report for engineering.",
+    "good": "Write a weekly engineering report: highlights, lowlights, KPIs (deploys, incidents), hiring update, and top risks; bullets only.",
+    "bad_explanation": "Vague.",
+    "ok_explanation": "Audience set; structure missing.",
+    "good_explanation": "Standard sections improve scanability.",
+    "details": "BAD → OK sets audience; OK → GOOD adds standard sections and KPIs to make reports scannable and useful."
+  },
+  {
+    "id": "ex45",
+    "bad": "Write a marketing brief.",
+    "ok": "Write a campaign brief.",
+    "good": "Write a campaign brief for the Q4 launch: target persona, key message, channels, budget, timeline, and KPIs; one page.",
+    "bad_explanation": "No campaign scope.",
+    "ok_explanation": "Campaign named; details missing.",
+    "good_explanation": "Persona + channels + KPIs drive alignment.",
+    "details": "BAD → OK defines a campaign; OK → GOOD adds persona, message, channels, budget, timeline and KPIs to align execution."
+  },
+  {
+    "id": "ex46",
+    "bad": "Write an SLO.",
+    "ok": "Write SLOs for the API.",
+    "good": "Draft SLOs for the public API: availability 99.9%, p95 latency <300ms, and error budget policy; include measurement method.",
+    "bad_explanation": "Unclear target.",
+    "ok_explanation": "Service named; targets missing.",
+    "good_explanation": "Concrete targets + measurement enable governance.",
+    "details": "BAD → OK names a service; OK → GOOD sets targets and measurement plus error budgets to govern reliability."
+  },
+  {
+    "id": "ex47",
+    "bad": "Write a data request.",
+    "ok": "Ask for a data export.",
+    "good": "Request a CSV export from the orders table for Q2 2025 with columns id, customer_id, total, currency, created_at; filter status='paid'; needed by Friday.",
+    "bad_explanation": "No table/columns.",
+    "ok_explanation": "Export unspecified.",
+    "good_explanation": "Schema, filters, and deadline speed delivery.",
+    "details": "BAD → OK requests an export; OK → GOOD specifies schema, filters and deadline to eliminate back‑and‑forth."
+  },
+  {
+    "id": "ex48",
+    "bad": "Write a support macro.",
+    "ok": "Write a macro for password reset.",
+    "good": "Write a support macro for password reset failures: greeting, verification step, reset link instructions, security tip, and escalation path; keep under 120 words.",
+    "bad_explanation": "No flow.",
+    "ok_explanation": "Topic known; steps missing.",
+    "good_explanation": "Clear steps produce consistent replies.",
+    "details": "BAD → OK names the case; OK → GOOD defines steps, tone and length for consistent macro responses."
+  },
+  {
+    "id": "ex49",
+    "bad": "Write a code review checklist.",
+    "ok": "Write a code review checklist for Python.",
+    "good": "Write a Python code review checklist: correctness, tests, complexity, naming/style, security, and performance; include examples of good/bad diffs.",
+    "bad_explanation": "Vague.",
+    "ok_explanation": "Language set; criteria missing.",
+    "good_explanation": "Criteria + examples improve consistency.",
+    "details": "BAD → OK sets language; OK → GOOD adds criteria and examples to calibrate reviewers."
+  },
+  {
+    "id": "ex50",
+    "bad": "Write a rollout plan.",
+    "ok": "Write a rollout plan for feature X.",
+    "good": "Draft a rollout plan for feature X: beta cohort, success metrics, comms plan (internal/external), phased enablement, and rollback criteria.",
+    "bad_explanation": "No plan components.",
+    "ok_explanation": "Feature named; plan vague.",
+    "good_explanation": "Phased enablement + metrics reduce risk.",
+    "details": "BAD → OK names a plan; OK → GOOD adds cohorts, metrics, comms, phases and rollback to reduce launch risk."
+  }
+]

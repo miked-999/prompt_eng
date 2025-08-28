@@ -47,3 +47,15 @@ class QuizResult(BaseModel):
     correct: int
     details: List[Any]
 
+
+class ExampleItem(BaseModel):
+    id: str
+    bad: str
+    ok: str
+    good: str
+    # Per-level explanations shown on the right side
+    bad_explanation: str | None = None
+    ok_explanation: str | None = None
+    good_explanation: str | None = None
+    # Detailed, full-width explanation after GOOD
+    details: str | None = None
