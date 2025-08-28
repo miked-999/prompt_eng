@@ -8,27 +8,28 @@ from .models import EvaluationResponse
 
 
 SYSTEM_RUBRIC = (
-    "You are an expert evaluator of prompt engineering quality. "
-    "Assess prompts based on: Role/Persona, Goal clarity, Context, Constraints "
-    "(length, tone, format), Examples (few-shot), Evaluation/acceptance criteria, "
-    "Structure of expected output, and Uncertainty handling (clarifying questions, cite sources). "
-    "Return a strict JSON object with fields: label ('good'|'ok'|'bad'), score (0-100), "
-    "summary, subscores (array of {name, score:0-5, comment}), feedback (array of strings), "
-    "suggestions (array of {title, text}), improved_prompt (string)."
+    "You are an expert evaluator of question quality for eliciting useful answers. "
+    "Assess the user's QUESTION on how well it guides a helpful response. Focus on: "
+    "Clarity (direct question), Specificity (topic/audience/numbers), Context (relevant background), "
+    "Constraints & Format (length, tone, bullets/table/JSON), Scope & Feasibility (not overly broad), "
+    "Neutrality (non-leading phrasing), Outcome Orientation (states intended use), and Clarification (invites clarifying questions). "
+    "Return a strict JSON object with fields: label ('good'|'ok'|'bad'), score (0-100), summary, "
+    "subscores (array of {name, score:0-5, comment}), feedback (array of strings), suggestions (array of {title, text}), "
+    "improved_prompt (string with an improved QUESTION)."
 )
 
 
 def _build_user_prompt(prompt: str, goal: Optional[str]) -> str:
     return (
-        "Evaluate the following prompt for quality.\n\n"
-        f"Prompt:\n{prompt}\n\n"
-        f"Goal (optional): {goal or 'None'}\n\n"
+        "Evaluate the following QUESTION for its ability to elicit a high-quality answer.\n\n"
+        f"Question:\n{prompt}\n\n"
+        f"Intended goal/use (optional): {goal or 'None'}\n\n"
         "Scoring guidance:\n"
-        "- 90-100: Exceptional; explicit role, clear goal, rich context, precise constraints, examples, structure, uncertainty handling.\n"
-        "- 60-89: Solid; some aspects missing (e.g., examples/constraints).\n"
-        "- 0-59: Weak; vague, lacks goal/context/format.\n"
+        "- 90-100: Exceptional; clear, specific, with context, feasible scope, and format.\n"
+        "- 60-89: Good; one or two areas to tighten (e.g., context/specifics/format).\n"
+        "- 0-59: Weak; vague or broad, lacks clarity, context, or constraints.\n"
         "Map the score to label: good (>=75), ok (45-74), bad (<45).\n"
-        "Provide a concise improved_prompt that addresses top gaps."
+        "Return an improved QUESTION that addresses the top gaps."
     )
 
 
@@ -76,4 +77,3 @@ async def evaluate_with_ollama(prompt: str, goal: Optional[str], cfg: AppConfig)
         )
     except Exception:
         return None
-

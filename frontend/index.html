@@ -35,6 +35,9 @@
       .quiz-item { border:1px solid #2a3556; border-radius:10px; padding:12px; margin:8px 0; background:#0f1425; }
       .choices { display:flex; gap:8px; }
       .choices button { flex:1; }
+      .tips { margin-top: 12px; }
+      .tip { border:1px solid #2a3556; border-radius:10px; padding:10px; margin:8px 0; background:#0f1425; }
+      .tip pre { background:#0b1020; border:1px solid #26304d; padding:8px; border-radius:8px; overflow:auto; }
     </style>
   </head>
   <body>
@@ -50,13 +53,15 @@
         <div v-if="tab==='evaluate'">
           <div class="grid">
             <div class="col-6">
-              <div class="section-title">Your Prompt</div>
-              <textarea v-model="prompt" placeholder="Paste or write your prompt here..."></textarea>
-              <div class="section-title">Optional Goal</div>
-              <input v-model="goal" placeholder="E.g., Summarize for executives in 120 words" />
+              <div class="section-title">Your Question</div>
+              <textarea v-model="prompt" placeholder="Ask your question here... Be clear and specific."></textarea>
               <div style="margin-top:10px" class="row">
                 <button @click="evaluate" :disabled="loading">Evaluate</button>
-                <button class="ghost" @click="example">Use Example</button>
+                <button class="ghost" @click="improve" :disabled="loading">Improve Prompt</button>
+              </div>
+              <div v-if="improvedDraft" style="margin-top:10px">
+                <div class="section-title">Improved Prompt</div>
+                <textarea v-model="improvedDraft"></textarea>
               </div>
             </div>
             <div class="col-6">
@@ -67,7 +72,7 @@
                   <div class="pill" :class="result.label">{{ result.label.toUpperCase() }}</div>
                 </div>
                 <p>{{ result.summary }}</p>
-                <div class="section-title">Subscores</div>
+                <div class="section-title">Question Attributes</div>
                 <div>
                   <div v-for="s in result.subscores" :key="s.name" class="subscore">
                     <div>{{ s.name }}</div>
@@ -82,8 +87,23 @@
                 <div v-for="s in result.suggestions" :key="s.title" class="suggestion">
                   <strong>{{ s.title }}:</strong> {{ s.text }}
                 </div>
-                <div class="section-title">Improved Prompt (starter)</div>
-                <textarea readonly>{{ result.improved_prompt }}</textarea>
+                <div class="section-title">Tips to Improve</div>
+                <div class="tips">
+                  <div v-for="t in weakestTips" :key="t.name" class="tip">
+                    <div style="font-weight:700">{{ t.name }}</div>
+                    <div class="muted" style="margin:6px 0">{{ t.advice }}</div>
+                    <div class="row" style="gap:10px">
+                      <div style="flex:1">
+                        <div class="section-title" style="margin:6px 0 4px">Before</div>
+                        <pre>{{ t.before }}</pre>
+                      </div>
+                      <div style="flex:1">
+                        <div class="section-title" style="margin:6px 0 4px">After</div>
+                        <pre>{{ t.after }}</pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -124,15 +144,54 @@
           return {
             tab: 'evaluate',
             prompt: '',
-            goal: '',
+            improvedDraft: '',
             result: null,
             loading: false,
             quiz: [],
             quizResult: null,
+            tipsMap: {
+              'Clarity': {
+                advice: 'Ask one direct question. Avoid multiple asks in one sentence.',
+                before: 'Tell me about databases',
+                after: 'What are the key differences between relational and NoSQL databases?'
+              },
+              'Specificity': {
+                advice: 'Add topic, audience, and numbers to narrow the scope.',
+                before: 'How do I learn Python?',
+                after: 'What 3 topics should a beginner learn in Python over 30 days (1 hour/day)?'
+              },
+              'Context': {
+                advice: 'Include the most relevant background or inputs.',
+                before: 'Why is my model slow?',
+                after: 'Given a 500MB dataset and XGBoost on CPU-only, why does training take >30 minutes?'
+              },
+              'Constraints & Format': {
+                advice: 'Set length, tone, and output structure so answers are easy to use.',
+                before: 'Summarize this meeting',
+                after: 'Summarize this meeting in 5 bullets focused on decisions, owners, and deadlines.'
+              },
+              'Scope & Feasibility': {
+                advice: 'Avoid “everything/anything”. Ask for the most relevant parts.',
+                before: 'Explain all of machine learning',
+                after: 'Explain the differences between supervised and unsupervised learning in 5 bullets.'
+              },
+              'Neutrality': {
+                advice: 'Use neutral phrasing to avoid leading the answer.',
+                before: 'Why is framework X obviously better than Y?',
+                after: 'Compare framework X and Y for building a REST API: performance, DX, ecosystem.'
+              },
+              'Outcome Orientation': {
+                advice: 'State how you will use the answer to guide focus.',
+                before: 'How do I write OKRs?',
+                after: 'How do I write 3 measurable OKRs for a support team so I can present them to leadership?'
+              },
+              'Clarification': {
+                advice: 'Invite 1–2 clarifying questions when info is missing.',
+                before: 'Fix this code',
+                after: 'If anything is unclear, ask up to 2 questions, then suggest fixes to this code.'
+              }
+            }
           };
-        },
-        computed: {
-          answered() { return this.quiz.filter(q => q._chosen).length; }
         },
         methods: {
           async evaluate() {
@@ -142,18 +201,34 @@
               const res = await fetch(`${API}/api/evaluate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: this.prompt, goal: this.goal || null })
+                body: JSON.stringify({ prompt: this.prompt })
               });
-              this.result = await res.json();
+              const data = await res.json();
+              this.result = data;
+              if (data && data.improved_prompt) {
+                this.improvedDraft = data.improved_prompt;
+              }
             } catch (e) {
               alert('Failed to reach API. Is the backend running on 8000?');
             } finally {
               this.loading = false;
             }
           },
-          example() {
-            this.prompt = 'Act as a senior data analyst. Given the following sales CSV, identify top 3 insights and one risk. Return bullet points, then a JSON summary with keys {"insights":[], "risk":""}. If key data is missing, ask 2 clarifying questions before answering.';
-            this.goal = 'Extract actionable insights with constraints and structured output';
+          async improve() {
+            this.loading = true;
+            try {
+              const res = await fetch(`${API}/api/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: this.prompt })
+              });
+              const data = await res.json();
+              this.improvedDraft = data && data.improved_prompt ? data.improved_prompt : '';
+            } catch (e) {
+              alert('Failed to improve. Is the backend running on 8000?');
+            } finally {
+              this.loading = false;
+            }
           },
           async loadQuiz() {
             try {
@@ -184,9 +259,25 @@
               alert('Failed to submit quiz.');
             }
           }
+        },
+        computed: {
+          answered() { return this.quiz.filter(q => q._chosen).length; },
+          weakestTips() {
+            if (!this.result || !this.result.subscores || !this.result.subscores.length) return [];
+            const subs = this.result.subscores;
+            const minScore = Math.min(...subs.map(s => s.score));
+            const weakest = subs.filter(s => s.score === minScore).slice(0, 2);
+            return weakest.map(s => {
+              const tip = this.tipsMap[s.name] || {
+                advice: s.comment || 'Clarify this aspect to improve answer quality.',
+                before: 'What about this?',
+                after: 'Ask a clearer, more specific question with context and format.'
+              };
+              return { name: s.name, ...tip };
+            });
+          }
         }
       }).mount('body');
     </script>
   </body>
   </html>
-
