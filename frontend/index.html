@@ -32,12 +32,18 @@
       .score { font-size: 36px; font-weight: 800; }
       .subscore { display:flex; justify-content: space-between; border-bottom:1px dashed #283355; padding: 6px 0; }
       .subscore:last-child { border-bottom: 0; }
+      .emoji { font-size: 20px; }
+      .attr.bad { color: var(--bad); }
+      .attr.ok { color: var(--ok); }
+      .attr.good { color: var(--good); }
       .quiz-item { border:1px solid #2a3556; border-radius:10px; padding:12px; margin:8px 0; background:#0f1425; }
       .choices { display:flex; gap:8px; }
       .choices button { flex:1; }
       .tips { margin-top: 12px; }
       .tip { border:1px solid #2a3556; border-radius:10px; padding:10px; margin:8px 0; background:#0f1425; }
       .tip pre { background:#0b1020; border:1px solid #26304d; padding:8px; border-radius:8px; overflow:auto; }
+      .spinner { width:16px; height:16px; border:2px solid #3b4c77; border-top-color: var(--accent); border-radius:50%; display:inline-block; animation: spin .8s linear infinite; }
+      @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
     </style>
   </head>
   <body>
@@ -56,8 +62,12 @@
               <div class="section-title">Your Question</div>
               <textarea v-model="prompt" placeholder="Ask your question here... Be clear and specific."></textarea>
               <div style="margin-top:10px" class="row">
-                <button @click="evaluate" :disabled="loading">Evaluate</button>
-                <button class="ghost" @click="improve" :disabled="loading">Improve Prompt</button>
+                <button @click="evaluate" :disabled="loading">{{ loading ? 'Evaluating…' : 'Evaluate' }}</button>
+                <button class="ghost" @click="improve" :disabled="loading">{{ loading ? 'Improving…' : 'Improve Prompt' }}</button>
+                <div v-if="loading" style="display:flex; align-items:center; gap:8px; flex:0;">
+                  <span class="spinner"></span>
+                  <span class="muted">Working…</span>
+                </div>
               </div>
               <div v-if="improvedDraft" style="margin-top:10px">
                 <div class="section-title">Improved Prompt</div>
@@ -75,9 +85,12 @@
                 <div class="section-title">Question Attributes</div>
                 <div>
                   <div v-for="s in result.subscores" :key="s.name" class="subscore">
-                    <div>{{ s.name }}</div>
-                    <div>{{ s.score }}/5</div>
+                    <div :class="['attr', qualityClass(s.score)]">{{ s.name }}</div>
+                    <div class="emoji">{{ emoji(s.score) }}</div>
                   </div>
+                </div>
+                <div class="muted" style="margin-top:6px; font-size: 12px;">
+                  Legend: <span class="attr bad">😞 needs work</span> · <span class="attr ok">😐 okay</span> · <span class="attr good">😊 strong</span>
                 </div>
                 <div class="section-title">Feedback</div>
                 <ul>
@@ -229,6 +242,16 @@
             } finally {
               this.loading = false;
             }
+          },
+          emoji(val) {
+            if (val <= 2) return '😞';
+            if (val === 3) return '😐';
+            return '😊';
+          },
+          qualityClass(val) {
+            if (val <= 2) return 'bad';
+            if (val === 3) return 'ok';
+            return 'good';
           },
           async loadQuiz() {
             try {
