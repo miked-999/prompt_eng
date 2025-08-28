@@ -1,0 +1,9 @@
+{
+  "ollama": {
+    "enabled": true,
+    "base_url": "http://localhost:11434",
+    "model": "gemma3:4b",
+    "timeout_sec": 20
+  }
+}
+

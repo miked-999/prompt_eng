@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Engineering Trainer</title>
+    <style>
+      :root { --bg:#0b1020; --card:#151b2e; --text:#e6e9f2; --muted:#a6accd; --accent:#6ab7ff; --bad:#ff6b6b; --ok:#ffd166; --good:#06d6a0; }
+      body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+      .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+      .card { background: var(--card); border-radius: 12px; padding: 16px 18px; box-shadow: 0 2px 12px rgba(0,0,0,.2); }
+      h1 { font-size: 22px; margin: 0 0 8px; }
+      p.muted { color: var(--muted); margin-top: 0; }
+      textarea, input, select { width: 100%; background:#0f1425; color:var(--text); border:1px solid #26304d; border-radius:8px; padding:10px; }
+      textarea { min-height: 140px; }
+      button { background: var(--accent); color:#001027; border:0; border-radius:8px; padding:10px 14px; cursor:pointer; font-weight:600; }
+      button.ghost { background: transparent; color: var(--accent); border:1px solid var(--accent); }
+      .row { display:flex; gap:12px; align-items:center; }
+      .row > * { flex: 1; }
+      .tabs { display:flex; gap:8px; margin: 12px 0 16px; }
+      .tab { padding: 8px 12px; border-radius: 999px; border:1px solid #2a3556; cursor: pointer; color: var(--muted); }
+      .tab.active { background:#1a2240; color: var(--text); border-color:#3b4c77; }
+      .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; }
+      .pill.bad { background: rgba(255,107,107,.2); color: var(--bad); }
+      .pill.ok { background: rgba(255,209,102,.2); color: var(--ok); }
+      .pill.good { background: rgba(6,214,160,.2); color: var(--good); }
+      .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+      .col-6 { grid-column: span 6; }
+      .section-title { font-weight:700; margin: 12px 0 8px; font-size: 14px; color: var(--muted); }
+      ul { margin: 0; padding-left: 16px; }
+      .suggestion { border-left: 2px solid #2e3b63; padding-left: 10px; margin: 8px 0; }
+      .score { font-size: 36px; font-weight: 800; }
+      .subscore { display:flex; justify-content: space-between; border-bottom:1px dashed #283355; padding: 6px 0; }
+      .subscore:last-child { border-bottom: 0; }
+      .quiz-item { border:1px solid #2a3556; border-radius:10px; padding:12px; margin:8px 0; background:#0f1425; }
+      .choices { display:flex; gap:8px; }
+      .choices button { flex:1; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>Prompt Engineering Trainer</h1>
+        <p class="muted">Practice identifying prompt quality and improve your prompts with actionable feedback.</p>
+        <div class="tabs">
+          <div class="tab" :class="{active: tab==='evaluate'}" @click="tab='evaluate'">Evaluate</div>
+          <div class="tab" :class="{active: tab==='quiz'}" @click="tab='quiz'">Quiz</div>
+        </div>
+
+        <div v-if="tab==='evaluate'">
+          <div class="grid">
+            <div class="col-6">
+              <div class="section-title">Your Prompt</div>
+              <textarea v-model="prompt" placeholder="Paste or write your prompt here..."></textarea>
+              <div class="section-title">Optional Goal</div>
+              <input v-model="goal" placeholder="E.g., Summarize for executives in 120 words" />
+              <div style="margin-top:10px" class="row">
+                <button @click="evaluate" :disabled="loading">Evaluate</button>
+                <button class="ghost" @click="example">Use Example</button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="section-title">Result</div>
+              <div v-if="result" class="card">
+                <div class="row" style="align-items:baseline">
+                  <div class="score">{{ result.score }}</div>
+                  <div class="pill" :class="result.label">{{ result.label.toUpperCase() }}</div>
+                </div>
+                <p>{{ result.summary }}</p>
+                <div class="section-title">Subscores</div>
+                <div>
+                  <div v-for="s in result.subscores" :key="s.name" class="subscore">
+                    <div>{{ s.name }}</div>
+                    <div>{{ s.score }}/5</div>
+                  </div>
+                </div>
+                <div class="section-title">Feedback</div>
+                <ul>
+                  <li v-for="f in result.feedback" :key="f">{{ f }}</li>
+                </ul>
+                <div class="section-title">Suggestions</div>
+                <div v-for="s in result.suggestions" :key="s.title" class="suggestion">
+                  <strong>{{ s.title }}:</strong> {{ s.text }}
+                </div>
+                <div class="section-title">Improved Prompt (starter)</div>
+                <textarea readonly>{{ result.improved_prompt }}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="tab==='quiz'">
+          <div class="row" style="margin-bottom:8px">
+            <button @click="loadQuiz">Load Quiz</button>
+            <div v-if="quiz.length">{{ answered }}/{{ quiz.length }} answered</div>
+          </div>
+          <div v-for="item in quiz" :key="item.id" class="quiz-item">
+            <div style="white-space:pre-wrap">{{ item.prompt }}</div>
+            <div class="choices" style="margin-top:8px">
+              <button @click="choose(item, 'bad')" :disabled="item._chosen">Bad</button>
+              <button @click="choose(item, 'ok')" :disabled="item._chosen">Ok</button>
+              <button @click="choose(item, 'good')" :disabled="item._chosen">Good</button>
+            </div>
+            <div v-if="item._chosen" style="margin-top:8px">
+              <span class="pill" :class="item._correct ? 'good' : 'bad'">{{ item._correct ? 'Correct' : 'Incorrect' }}</span>
+              <div class="muted" style="margin-top:6px">Expected: <strong>{{ item.label.toUpperCase() }}</strong> — {{ item.rationale }}</div>
+            </div>
+          </div>
+          <div v-if="quiz.length" class="row" style="margin-top:12px">
+            <button @click="submitQuiz">Submit</button>
+            <div v-if="quizResult">Score: {{ quizResult.score }} ({{ quizResult.correct }}/{{ quizResult.total }})</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script>
+      const API = 'http://localhost:8000';
+      const { createApp, reactive } = Vue;
+
+      createApp({
+        data() {
+          return {
+            tab: 'evaluate',
+            prompt: '',
+            goal: '',
+            result: null,
+            loading: false,
+            quiz: [],
+            quizResult: null,
+          };
+        },
+        computed: {
+          answered() { return this.quiz.filter(q => q._chosen).length; }
+        },
+        methods: {
+          async evaluate() {
+            this.loading = true;
+            this.result = null;
+            try {
+              const res = await fetch(`${API}/api/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: this.prompt, goal: this.goal || null })
+              });
+              this.result = await res.json();
+            } catch (e) {
+              alert('Failed to reach API. Is the backend running on 8000?');
+            } finally {
+              this.loading = false;
+            }
+          },
+          example() {
+            this.prompt = 'Act as a senior data analyst. Given the following sales CSV, identify top 3 insights and one risk. Return bullet points, then a JSON summary with keys {"insights":[], "risk":""}. If key data is missing, ask 2 clarifying questions before answering.';
+            this.goal = 'Extract actionable insights with constraints and structured output';
+          },
+          async loadQuiz() {
+            try {
+              const res = await fetch(`${API}/api/quiz?limit=8`);
+              const items = await res.json();
+              this.quiz = items.map(it => ({ ...it, _chosen: null, _correct: null }));
+              this.quizResult = null;
+              this.tab = 'quiz';
+            } catch (e) {
+              alert('Failed to load quiz. Start the backend on 8000.');
+            }
+          },
+          choose(item, label) {
+            item._chosen = label;
+            item._correct = (label === item.label);
+          },
+          async submitQuiz() {
+            const answers = this.quiz.filter(i => i._chosen).map(i => ({ item_id: i.id, label: i._chosen }));
+            if (!answers.length) return;
+            try {
+              const res = await fetch(`${API}/api/quiz/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answers })
+              });
+              this.quizResult = await res.json();
+            } catch (e) {
+              alert('Failed to submit quiz.');
+            }
+          }
+        }
+      }).mount('body');
+    </script>
+  </body>
+  </html>
+

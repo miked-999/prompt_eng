@@ -1,0 +1,127 @@
+[
+  {
+    "id": "q1",
+    "prompt": "Write a blog post.",
+    "label": "bad",
+    "rationale": "No audience, length, topic, or structure specified."
+  },
+  {
+    "id": "q2",
+    "prompt": "Summarize this article.",
+    "label": "bad",
+    "rationale": "Missing the article text, summary length, or style."
+  },
+  {
+    "id": "q3",
+    "prompt": "You are a data analyst. Given the CSV of monthly sales by region, identify top 3 insights and one potential risk. Return bullet points only.",
+    "label": "good",
+    "rationale": "Defines role, context, task, constraints, and structure."
+  },
+  {
+    "id": "q4",
+    "prompt": "Translate to Spanish.",
+    "label": "bad",
+    "rationale": "No source text, dialect, or tone specified."
+  },
+  {
+    "id": "q5",
+    "prompt": "Act as a senior product manager. Draft a 120-word launch announcement for a new calendar app aimed at busy parents. Use a warm, helpful tone and include a clear CTA.",
+    "label": "good",
+    "rationale": "Role, audience, length, tone, CTA — clear constraints."
+  },
+  {
+    "id": "q6",
+    "prompt": "Improve this sentence: The app good and fast.",
+    "label": "ok",
+    "rationale": "Task is clear but lacks style/criteria for improvement."
+  },
+  {
+    "id": "q7",
+    "prompt": "Summarize the following meeting transcript in 5 bullets focusing on decisions, owners, and deadlines. If dates are missing, note 'TBD'. Transcript: <...>",
+    "label": "good",
+    "rationale": "Clear structure, constraints, and uncertainty handling."
+  },
+  {
+    "id": "q8",
+    "prompt": "Write code for this.",
+    "label": "bad",
+    "rationale": "No language, input/output, or requirements specified."
+  },
+  {
+    "id": "q9",
+    "prompt": "Classify each review as Positive or Negative. Output JSON array of {review_id, label}. Reviews: [ ... ]",
+    "label": "ok",
+    "rationale": "Good format but missing edge cases and examples."
+  },
+  {
+    "id": "q10",
+    "prompt": "Explain quantum computing to me in simple terms.",
+    "label": "ok",
+    "rationale": "Clear request but lacks structure, length, or audience level."
+  },
+  {
+    "id": "q11",
+    "prompt": "Rewrite the email more professional.",
+    "label": "bad",
+    "rationale": "Unclear criteria and missing source email."
+  },
+  {
+    "id": "q12",
+    "prompt": "You are a helpful assistant. Convert the following notes into a project plan with milestones and dates in a Markdown table. Ask 2 clarifying questions if dates are missing.",
+    "label": "good",
+    "rationale": "Role, structure, format, and uncertainty handling are defined."
+  },
+  {
+    "id": "q13",
+    "prompt": "Generate 10 ideas.",
+    "label": "bad",
+    "rationale": "No topic, constraints, or audience."
+  },
+  {
+    "id": "q14",
+    "prompt": "Create a study plan for learning Python in 30 days for a beginner with 1 hour per day. Include topics and daily exercises in bullet points.",
+    "label": "good",
+    "rationale": "Clear constraints, audience, and structure."
+  },
+  {
+    "id": "q15",
+    "prompt": "Summarize.",
+    "label": "bad",
+    "rationale": "Too vague."
+  },
+  { "id": "q16", "prompt": "Draft a cover letter.", "label": "bad", "rationale": "No role, company, length, or tone specified." },
+  { "id": "q17", "prompt": "As a recruiter, write a 150-word outreach message to a senior backend engineer based in Berlin. Emphasize flexibility, list salary range, and ask one question at the end.", "label": "good", "rationale": "Role, audience, length, constraints, and structure." },
+  { "id": "q18", "prompt": "Translate the paragraph to French, Canadian dialect, preserving technical terms in English. Limit to 120 words. Paragraph: <...>", "label": "ok", "rationale": "Clear constraints but lacks tone/style and examples." },
+  { "id": "q19", "prompt": "Explain Kubernetes in 5 bullet points for beginners.", "label": "ok", "rationale": "Adds structure and audience but missing depth/examples." },
+  { "id": "q20", "prompt": "Explain Kubernetes to a junior web developer in 5 bullets: what it solves, core components, deployment flow, cost considerations, and when not to use it.", "label": "ok", "rationale": "Good structure; lacks acceptance criteria or examples." },
+  { "id": "q21", "prompt": "Generate unit tests.", "label": "bad", "rationale": "No language, framework, or inputs provided." },
+  { "id": "q22", "prompt": "Given this Python function, generate 3 pytest tests covering happy path and two edge cases. Return only the code block. Function: <code>", "label": "good", "rationale": "Language, framework, count, and output format specified." },
+  { "id": "q23", "prompt": "Summarize the PDF in 3 sentences.", "label": "ok", "rationale": "Length specified but missing source and focus." },
+  { "id": "q24", "prompt": "From the following incident report, extract a JSON array of {timestamp, system, impact, resolution}. If a field is missing, use null. Report: <...>", "label": "good", "rationale": "Clear extraction schema and uncertainty handling." },
+  { "id": "q25", "prompt": "Write marketing copy for our product.", "label": "bad", "rationale": "No product details, audience, or tone." },
+  { "id": "q26", "prompt": "Act as a UX writer. Write 3 alternative 50–70 character error messages for a failed payment, in a calm, instructive tone. Return a numbered list.", "label": "good", "rationale": "Role, constraints, tone, and structure set." },
+  { "id": "q27", "prompt": "Paraphrase the text.", "label": "bad", "rationale": "Missing the text and style requirements." },
+  { "id": "q28", "prompt": "Paraphrase the following paragraph to be more formal and concise. Preserve citations and acronyms. Paragraph: <...>", "label": "ok", "rationale": "Clear style but lacks length/structure constraints." },
+  { "id": "q29", "prompt": "Write a research summary in APA style with citations from credible sources. Topic: <...>", "label": "ok", "rationale": "Has style but lacks length, sections, and source requirements." },
+  { "id": "q30", "prompt": "Create a 7-day vegetarian meal plan under 2,000 kcal/day, include protein estimates per meal and a consolidated shopping list at the end.", "label": "good", "rationale": "Clear constraints, structure, and output sections." },
+  { "id": "q31", "prompt": "Give feedback.", "label": "bad", "rationale": "No target, criteria, or format." },
+  { "id": "q32", "prompt": "Review the following resume against the job description and provide 5 actionable improvements. Output bullets grouped by 'Experience', 'Skills', 'Formatting'.", "label": "ok", "rationale": "Clear task and structure; lacks length/style constraints or examples." },
+  { "id": "q33", "prompt": "List 5 influential books on <topic>.", "label": "ok", "rationale": "Adds count and topic but lacks audience or selection criteria." },
+  { "id": "q34", "prompt": "Recommend 5 beginner-friendly books on machine learning with a one-line takeaway each; include publication year. Return a Markdown table.", "label": "ok", "rationale": "Well-structured but lacks acceptance criteria or sources/citations." },
+  { "id": "q35", "prompt": "Fix grammar: I has went to store.", "label": "ok", "rationale": "Clear task but lacks tone or variant preferences." },
+  { "id": "q36", "prompt": "Generate code to parse logs to CSV in any language.", "label": "bad", "rationale": "No language, input format, or schema." },
+  { "id": "q37", "prompt": "In Python 3.11, write a script that reads Apache log lines from stdin and outputs CSV with columns {ip, method, path, status}. Include one example input and output.", "label": "good", "rationale": "Language, IO, schema, and examples included." },
+  { "id": "q38", "prompt": "Write a poem about summer.", "label": "ok", "rationale": "Clear but lacks length or style constraints." },
+  { "id": "q39", "prompt": "Write a 6-line haiku-inspired poem about summer evenings by the sea; avoid rhyme and include one sensory detail per line.", "label": "good", "rationale": "Strong constraints and stylistic guidance." },
+  { "id": "q40", "prompt": "Extract key takeaways.", "label": "bad", "rationale": "No source or format." },
+  { "id": "q41", "prompt": "From this transcript, extract 5 key takeaways focused on risks and mitigations; return bullet points with 'Risk:' and 'Mitigation:' prefixes.", "label": "good", "rationale": "Clear focus and output structure." },
+  { "id": "q42", "prompt": "Summarize the book in 200 words.", "label": "ok", "rationale": "Has length but lacks target audience or angle." },
+  { "id": "q43", "prompt": "Compare PostgreSQL and MongoDB for an analytics workload in a table with rows: data model, query patterns, scalability, costs, ecosystem. End with a recommendation.", "label": "good", "rationale": "Structure and decision requested." },
+  { "id": "q44", "prompt": "Make it better.", "label": "bad", "rationale": "Undefined task and criteria." },
+  { "id": "q45", "prompt": "Rewrite the following email to be polite but firm, limit to 120 words, and include a clear next step. Email: <...>", "label": "good", "rationale": "Tone, length, and goal set." },
+  { "id": "q46", "prompt": "Find bugs in this code.", "label": "bad", "rationale": "No language, code, or scope." },
+  { "id": "q47", "prompt": "Given the Java code below, identify 3 potential bugs and suggest fixes. Return a two-column Markdown table with 'Issue' and 'Fix'. Code: <...>", "label": "good", "rationale": "Scope, count, and output format specified." },
+  { "id": "q48", "prompt": "Summarize this email thread and draft a reply.", "label": "ok", "rationale": "Vague constraints; lacks tone and length." },
+  { "id": "q49", "prompt": "Act as an SRE. Given the incident timeline, create a 1-page postmortem outline with sections: Impact, Root Cause, Detection, Mitigation, Action Items (owners, dates).", "label": "good", "rationale": "Role, structure, and owners/dates specified." },
+  { "id": "q50", "prompt": "Create an outline for an 8-slide presentation on <topic>.", "label": "ok", "rationale": "Adds structure/length but lacks audience and detailed sections." }
+]
