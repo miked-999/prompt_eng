@@ -1,3 +1,11 @@
+"""Ollama-backed LLM evaluator.
+
+Sends a rubric and the user's question to the local Ollama server and expects
+structured JSON describing label, score, subscores, feedback, suggestions, and
+an improved prompt. If the request fails or the response cannot be parsed,
+the caller should fall back to the heuristic evaluator.
+"""
+
 import json
 from typing import Any, Dict, Optional
 
@@ -28,6 +36,11 @@ def _build_user_prompt(prompt: str, goal: Optional[str]) -> str:
 
 
 async def evaluate_with_ollama(prompt: str, goal: Optional[str], cfg: AppConfig) -> Optional[EvaluationResponse]:
+    """Evaluate using Ollama if enabled in config.
+
+    Returns `None` if disabled, request fails, or the response cannot be parsed
+    into `EvaluationResponse`.
+    """
     if not cfg.ollama.enabled:
         return None
 

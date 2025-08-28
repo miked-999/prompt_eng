@@ -4,11 +4,23 @@ from typing import List, Tuple, Optional
 from .models import EvaluationResponse, Subscore, Suggestion
 
 
-# Simpler, user-friendly rubric: 4 attributes scored 0/1/2
+# Simpler, user-friendly rubric: 4 attributes scored 0/1/2.
+#
+# Attributes
+# - Clarity: is it a single, direct question?
+# - Specificity: does it narrow scope (audience/topic/numbers/timeframe)?
+# - Context: does it include usable background (URLs, code/JSON, lists, numbers)?
+# - Constraints & Format: does it request length/tone/structure (bullets/table/JSON)?
+#
+# Overall score = sum(attributes) * 12.5 → 0..100, then label good/ok/bad.
 question_words = ["who", "what", "when", "where", "why", "how", "which"]
 
 
 def _clarity(text: str) -> Tuple[int, str]:
+    """Score clarity: 0=needs work, 1=okay, 2=strong.
+
+    Signals: presence of a question mark and question words, and a minimal length to avoid telegraphic asks.
+    """
     has_qmark = "?" in text
     has_qword = any(re.search(fr"\b{w}\b", text, re.I) for w in question_words)
     words = len(text.split())
@@ -20,6 +32,7 @@ def _clarity(text: str) -> Tuple[int, str]:
 
 
 def _specificity(text: str) -> Tuple[int, str]:
+    """Score specificity: 0/1/2 based on scope-narrowing cues."""
     hits = 0
     if re.search(r"\b(\d+|top \d+|in \d+ (words|bullets))\b", text, re.I):
         hits += 1
@@ -35,6 +48,10 @@ def _specificity(text: str) -> Tuple[int, str]:
 
 
 def _context(text: str) -> Tuple[int, str]:
+    """Score context using content signals rather than explicit marker words.
+
+    Considers URLs, code blocks/inline code, structured data, and lists/numerical density.
+    """
     # Score context based on content signals, not explicit markers
     has_url = bool(re.search(r"https?://\S+", text))
     has_code_like = ("```" in text) or bool(re.search(r"`[^`]{10,}`", text))
@@ -53,6 +70,10 @@ def _context(text: str) -> Tuple[int, str]:
 
 
 def _format(text: str) -> Tuple[int, str]:
+    """Score constraints & format: look for length, structure, tone/level.
+
+    Two or more signals → strong (2); one signal → okay (1); none → needs work (0).
+    """
     hits = 0
     if re.search(r"\b(in \d+ (words|sentences|bullets|lines))\b", text, re.I):
         hits += 1
@@ -76,6 +97,10 @@ def _label_from_score(score: int) -> str:
 
 
 def score_prompt(prompt: str, goal: Optional[str] = None) -> EvaluationResponse:
+    """Evaluate a question/prompt and return a structured `EvaluationResponse`.
+
+    Heuristic-only; the API endpoint may use the LLM-backed evaluator first.
+    """
     text = prompt.strip()
     core: List[Tuple[str, int, str]] = [
         ("Clarity",) + _clarity(text),
@@ -127,6 +152,10 @@ def score_prompt(prompt: str, goal: Optional[str] = None) -> EvaluationResponse:
 
 
 def build_improved_prompt(prompt: str, goal: Optional[str], subs: List[Tuple[str, int, str]]) -> str:
+    """Return a single rewritten question/instruction that addresses detected weaknesses.
+
+    Avoids meta-text; adds short specificity/format cues when missing.
+    """
     # Produce a single, rewritten question/instruction (no meta text)
     needs_format = next((s for n, s, _ in subs if n == "Constraints & Format"), 0) <= 1
     needs_specificity = next((s for n, s, _ in subs if n == "Specificity"), 0) <= 1

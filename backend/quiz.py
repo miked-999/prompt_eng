@@ -1,3 +1,5 @@
+"""Quiz item loader and sampler with basic stratification by label."""
+
 import json
 import random
 from pathlib import Path
@@ -10,12 +12,20 @@ DATA_PATH = Path(__file__).parent / "data" / "quiz.json"
 
 
 def _load_all() -> List[QuizItem]:
+    """Load all quiz items from disk.
+
+    Raises `json.JSONDecodeError` if the file is malformed.
+    """
     with DATA_PATH.open("r", encoding="utf-8") as f:
         data = json.load(f)
     return [QuizItem(**row) for row in data]
 
 
 def get_quiz_items(limit: int = 10) -> List[QuizItem]:
+    """Return up to `limit` items, ensuring at least 2 of each label if possible.
+
+    Falls back to random sampling for remaining slots.
+    """
     items = _load_all()
     if not items:
         return []

@@ -1,3 +1,5 @@
+"""Pydantic models used by the API."""
+
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal, Any
 
@@ -5,19 +7,30 @@ Label = Literal["good", "ok", "bad"]
 
 
 class Subscore(BaseModel):
+    """Named subscore for a question attribute.
+
+    - name: Attribute name (e.g., Clarity, Specificity, Context, Constraints & Format)
+    - score: 0–2 (heuristic) or up to 5 if returned by an LLM
+    - comment: Short comment for the attribute
+    """
+
     name: str
-    score: int = Field(ge=0, le=5)
+    score: int = Field(ge=0, le=5, description="Attribute score (0–2 for heuristic; up to 5 for LLM).")
     comment: str
 
 
 class Suggestion(BaseModel):
+    """Actionable suggestion with a short title and body."""
+
     title: str
     text: str
 
 
 class EvaluationResponse(BaseModel):
+    """Response for question evaluation."""
+
     label: Label
-    score: int = Field(ge=0, le=100)
+    score: int = Field(ge=0, le=100, description="Overall score from 0 to 100.")
     summary: str
     subscores: List[Subscore]
     feedback: List[str]
@@ -26,6 +39,8 @@ class EvaluationResponse(BaseModel):
 
 
 class QuizItem(BaseModel):
+    """A quiz item with an expected label and rationale."""
+
     id: str
     prompt: str
     label: Label
@@ -49,6 +64,8 @@ class QuizResult(BaseModel):
 
 
 class ExampleItem(BaseModel):
+    """Curated BAD/OK/GOOD example with explanations."""
+
     id: str
     bad: str
     ok: str
