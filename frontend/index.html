@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Prompt Engineering Trainer</title>
     <style>
+      *, *::before, *::after { box-sizing: border-box; }
       :root { --bg:#0b1020; --card:#151b2e; --text:#e6e9f2; --muted:#a6accd; --accent:#6ab7ff; --bad:#ff6b6b; --ok:#ffd166; --good:#06d6a0; }
       body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
       .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
@@ -25,7 +26,7 @@
       .pill.bad { background: rgba(255,107,107,.2); color: var(--bad); }
       .pill.ok { background: rgba(255,209,102,.2); color: var(--ok); }
       .pill.good { background: rgba(6,214,160,.2); color: var(--good); }
-      .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+      .grid { display:grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
       .col-6 { grid-column: span 6; }
       .col-8 { grid-column: span 8; }
       .col-4 { grid-column: span 4; }
@@ -55,6 +56,11 @@
       .prompt-text { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: 14px; line-height: 1.3; }
       .explain-text { margin: 0; font-size: 14px; line-height: 1.3; }
       .footer { text-align:center; color: var(--muted); font-size: 12px; margin: 16px 0 12px; }
+
+      /* Stack columns on smaller screens to avoid overlap */
+      @media (max-width: 900px) {
+        .col-4, .col-6, .col-8 { grid-column: 1 / -1; }
+      }
     </style>
   </head>
   <body>

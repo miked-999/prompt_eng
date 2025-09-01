@@ -167,12 +167,15 @@ def build_improved_prompt(prompt: str, goal: Optional[str], subs: List[Tuple[str
 
     tail: List[str] = []
     if needs_specificity:
-        tail.append("Focus on the top 3 most important points.")
+        #tail.append("Focus on the top 3 most important points.")
+        tail.append("")
     if needs_format:
-        tail.append("Return exactly 5 bullet points and a short summary (<=120 words).")
+        #tail.append("Return exactly 5 bullet points and a short summary (<=120 words).")
+        tail.append("")
     if needs_context:
         # Encourage including context implicitly by asking for relevance
-        tail.append("Prioritize details that are most relevant to the goal.")
+        #tail.append("Prioritize details that are most relevant to the goal.")
+        tail.append("")
 
     if tail:
         sep = " " if base.endswith(('.', '?')) else ". "
