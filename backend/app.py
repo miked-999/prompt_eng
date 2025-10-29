@@ -9,7 +9,7 @@ Interactive API docs (Swagger UI): /docs
 ReDoc: /redoc
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -20,6 +20,8 @@ from .quiz import get_quiz_items
 from .config import load_config
 from .llm_eval import evaluate_with_ollama
 from .examples import load_examples
+from .auth import require_user, start_login, handle_callback, me as auth_me, logout as auth_logout
+from starlette.middleware.sessions import SessionMiddleware
 
 
 tags_metadata = [
@@ -49,11 +51,14 @@ CONFIG = load_config()
 # Allow local dev frontends
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CONFIG.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Session middleware (required for SSO)
+app.add_middleware(SessionMiddleware, secret_key=CONFIG.auth.session_secret)
 
 
 class EvaluateRequest(BaseModel):
@@ -92,7 +97,7 @@ def health():
         "falls back to a heuristic evaluator otherwise."
     ),
 )
-async def evaluate_prompt(body: EvaluateRequest):
+async def evaluate_prompt(body: EvaluateRequest, _user=Depends(require_user) if CONFIG.auth.enabled else None):
     # Basic validation to prevent empty or oversized prompts
     if not body.prompt or not body.prompt.strip():
         raise HTTPException(status_code=422, detail="Prompt cannot be empty. Please type your question.")
@@ -113,7 +118,7 @@ async def evaluate_prompt(body: EvaluateRequest):
     summary="Get quiz items",
     description="Returns up to `limit` quiz items, sampled to ensure label balance where possible.",
 )
-def list_quiz_items(limit: int = 10):
+def list_quiz_items(limit: int = 10, _user=Depends(require_user) if CONFIG.auth.enabled else None):
     items = get_quiz_items(limit)
     return items
 
@@ -125,7 +130,7 @@ def list_quiz_items(limit: int = 10):
     summary="Submit quiz answers",
     description="Grades provided labels against the expected ones and returns a score and details.",
 )
-def submit_quiz(submission: QuizSubmission):
+def submit_quiz(submission: QuizSubmission, _user=Depends(require_user) if CONFIG.auth.enabled else None):
     # Grade answers
     correct = 0
     details = []
@@ -161,6 +166,28 @@ def submit_quiz(submission: QuizSubmission):
     summary="List curated examples",
     description="Returns BAD/OK/GOOD prompt examples with per-level explanations and detailed notes.",
 )
-def list_examples():
+def list_examples(_user=Depends(require_user) if CONFIG.auth.enabled else None):
     # Load from disk each request to reflect latest examples without restart
     return load_examples()
+
+
+# --- Auth routes (OIDC SSO) ---
+
+@app.get("/auth/login", tags=["Auth"], summary="Start login via OIDC")
+async def auth_login(request: Request, provider: Optional[str] = None):
+    return await start_login(request, CONFIG, provider)
+
+
+@app.get("/auth/callback/{provider}", tags=["Auth"], summary="OIDC redirect handler")
+async def auth_callback(request: Request, provider: str):
+    return await handle_callback(request, CONFIG, provider)
+
+
+@app.get("/auth/me", tags=["Auth"], summary="Return current user")
+async def auth_me_route(request: Request):
+    return await auth_me(request)
+
+
+@app.post("/auth/logout", tags=["Auth"], summary="Clear session")
+async def auth_logout_route(request: Request):
+    return await auth_logout(request)

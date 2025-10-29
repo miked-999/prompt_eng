@@ -24,7 +24,13 @@ Run Backend
 
 Run Frontend
 ------------
-Open `frontend/index.html` in a browser. The page calls the API at `http://localhost:8000`.
+Option A (quick): open `frontend/index.html` directly in a browser.
+
+Option B (recommended for SSO cookies): run a tiny static server on port 5173 and browse to it.
+
+  python scripts/serve_frontend.py --port 5173
+
+Ensure the backend CORS `allowed_origins` includes `http://localhost:5173` if auth is enabled.
 
 API Endpoints
 -------------
@@ -58,4 +64,3 @@ LLM Evaluation (Ollama)
   - Start the server (usually auto): `ollama serve`
 
 - The API tries LLM evaluation first; on failure or if disabled, it falls back to the built-in heuristic.
-

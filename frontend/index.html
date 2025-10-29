@@ -68,6 +68,20 @@
       <div class="card">
         <h1>Prompt Engineering Trainer</h1>
         <p class="muted">Practice identifying prompt quality and improve your prompts with actionable feedback.</p>
+        <div class="row" style="justify-content:flex-end; gap:8px; margin:6px 0 2px;">
+          <template v-if="user">
+            <span class="muted">Signed in as {{ user.name || user.preferred_username || user.email || 'User' }}</span>
+            <button class="ghost" @click="logout">Logout</button>
+          </template>
+          <template v-else>
+            <select v-model="loginProvider" style="max-width:180px">
+              <option value="">Default Provider</option>
+              <option value="keycloak">Keycloak</option>
+              <option value="adfs">ADFS</option>
+            </select>
+            <button @click="login">Sign in</button>
+          </template>
+        </div>
         <div class="tabs">
           <div class="tab" :class="{active: tab==='evaluate'}" @click="tab='evaluate'">Evaluate</div>
           <div class="tab" :class="{active: tab==='quiz'}" @click="tab='quiz'">Quiz</div>
@@ -210,15 +224,37 @@
             quiz: [],
             quizResult: null,
             examples: [],
-            currentExample: null
+            currentExample: null,
+            user: null,
+            loginProvider: ''
           };
         },
         methods: {
+          async checkAuth() {
+            try {
+              const res = await fetch(`${API}/auth/me`, { credentials: 'include' });
+              if (res.ok) {
+                this.user = await res.json();
+              } else {
+                this.user = null;
+              }
+            } catch (_) {
+              this.user = null;
+            }
+          },
+          login() {
+            const p = this.loginProvider ? `?provider=${encodeURIComponent(this.loginProvider)}` : '';
+            window.location = `${API}/auth/login${p}`;
+          },
+          async logout() {
+            try { await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' }); } catch (_) {}
+            this.user = null;
+          },
           async openExamples() {
             this.tab = 'examples';
             if (this.examples.length === 0) {
               try {
-                const res = await fetch(`${API}/api/examples`);
+                const res = await fetch(`${API}/api/examples`, { credentials: 'include' });
                 this.examples = await res.json();
               } catch (e) {
                 alert('Failed to load examples. Start the backend on 8000.');
@@ -232,6 +268,7 @@
               const res = await fetch(`${API}/api/evaluate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ prompt: this.prompt })
               });
               const data = await res.json();
@@ -251,6 +288,7 @@
               const res = await fetch(`${API}/api/evaluate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ prompt: this.prompt })
               });
               const data = await res.json();
@@ -273,7 +311,7 @@
           },
           async loadQuiz() {
             try {
-              const res = await fetch(`${API}/api/quiz?limit=8`);
+              const res = await fetch(`${API}/api/quiz?limit=8`, { credentials: 'include' });
               const items = await res.json();
               this.quiz = items.map(it => ({ ...it, _chosen: null, _correct: null }));
               this.quizResult = null;
@@ -293,6 +331,7 @@
               const res = await fetch(`${API}/api/quiz/submit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ answers })
               });
               this.quizResult = await res.json();
@@ -309,6 +348,9 @@
         computed: {
           answered() { return this.quiz.filter(q => q._chosen).length; },
           canAct() { return (this.prompt || '').trim().length > 0; }
+        },
+        async mounted() {
+          await this.checkAuth();
         }
       }).mount('body');
     </script>
