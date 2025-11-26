@@ -9,10 +9,12 @@ Interactive API docs (Swagger UI): /docs
 ReDoc: /redoc
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
+from pathlib import Path
 
 from .scoring import score_prompt
 from .models import EvaluationResponse, Suggestion, QuizItem, QuizSubmission, QuizResult, ExampleItem
@@ -54,6 +56,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Avoid noisy 404s for browsers requesting /favicon.ico
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)
 
 
 class EvaluateRequest(BaseModel):
@@ -164,3 +171,10 @@ def submit_quiz(submission: QuizSubmission):
 def list_examples():
     # Load from disk each request to reflect latest examples without restart
     return load_examples()
+
+# Optionally serve the frontend statically from / when present — added after API
+# routes so that /api/* takes priority over the static mount.
+ROOT_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = ROOT_DIR / "frontend"
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

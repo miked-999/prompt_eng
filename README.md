@@ -8,7 +8,7 @@ A simple web app to practice and gamify prompt engineering:
 Stack
 -----
 - Backend: FastAPI (Python)
-- Frontend: Vue 3 via CDN (no build step)
+- Frontend: Vue 3 (vendored in `frontend/vendor`, no build step)
 
 Run Backend
 -----------
@@ -24,7 +24,12 @@ Run Backend
 
 Run Frontend
 ------------
-Open `frontend/index.html` in a browser. The page calls the API at `http://localhost:8000`.
+Option A (served by FastAPI):
+- Start the API: `uvicorn backend.app:app --reload`
+- Open `http://localhost:8000/` in your browser (the backend serves the static frontend and suppresses favicon 404s).
+
+Option B (open the file directly):
+- Open `frontend/index.html` in a browser. The page calls the API at `http://localhost:8000` and works offline (no external CDNs). You may see 404s on `/` in the API logs if you browse to the API root; those are harmless if using this option.
 
 API Endpoints
 -------------
@@ -58,4 +63,3 @@ LLM Evaluation (Ollama)
   - Start the server (usually auto): `ollama serve`
 
 - The API tries LLM evaluation first; on failure or if disabled, it falls back to the built-in heuristic.
-
